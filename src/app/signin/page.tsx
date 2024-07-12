@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Signin = () => {
   const [username, setUsername] = useState("");
@@ -26,7 +27,12 @@ const Signin = () => {
       if (res.data.success) {
         console.log("Authenticated:", res.data);
 
-        // user ki details ke ley
+        // Save access token to cookies
+        Cookies.set("accessToken", res.data.data.accessToken, { expires: 7, secure: true });
+        console.log("Token :",res.data.data.accessToken);
+        
+
+        // Fetch user details using the access token
         const userDetailsRes = await axios.get("http://localhost:5000/user/my-details", {
           headers: {
             Authorization: `Bearer ${res.data.data.accessToken}`,
@@ -39,9 +45,8 @@ const Signin = () => {
         // Save username to localStorage
         localStorage.setItem("username", userDetails.data.user.username);
         console.log("username", userDetails.data.user.username);
-        
 
-        // role check krne ke ley aur role ke according route pe bhejne ke ley
+        // Check user role and redirect accordingly
         const userRole = userDetails.data.role.user_role;
         if (userRole === "Ginner") {
           router.push("/ginner/dashboard");
@@ -74,7 +79,9 @@ const Signin = () => {
             {error && <div className="text-red-500">{error}</div>}
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Your username
+                </label>
                 <input
                   type="text"
                   name="username"
@@ -87,7 +94,9 @@ const Signin = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Password
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -102,10 +111,17 @@ const Signin = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
-                    <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
+                    <input
+                      id="remember"
+                      aria-describedby="remember"
+                      type="checkbox"
+                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
+                    <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">
+                      Remember me
+                    </label>
                   </div>
                 </div>
               </div>
