@@ -10,7 +10,7 @@ const protectedRoutes: { [key: string]: string[] } = {
 };
 
 export async function middleware(req: NextRequest) {
-  // Retrieve the access token from cookies
+  //  access token from cookies
   const token = req.cookies.get('accessToken');
   console.log('Token:', token); 
 
@@ -36,7 +36,7 @@ export async function middleware(req: NextRequest) {
     }
 
     userDetails = await res.json();
-    console.log('User details:', userDetails); 
+    //console.log('User details:', userDetails); 
   } catch (error) {
     console.error('Error fetching user details:', error);
     return NextResponse.redirect(new URL('/', req.url));
@@ -62,7 +62,6 @@ export async function middleware(req: NextRequest) {
       // User's role is not allowed, redirect to the home page
       if (!allowedRoles.includes(role)) {
         console.log(`Role ${role} not allowed for route ${route}, redirecting to home`);
-        return NextResponse.redirect(new URL('/', req.url));
       }
     }
   }

@@ -1,16 +1,32 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Dashboard = () => {
   const [username, setUsername] = useState("");
+  const [role,setRole] = useState<string|null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
+      // user role
+ const userRole = localStorage.getItem("user-role")
+ console.log("AdminData",userRole);
+ if(userRole){
+  setRole(userRole);
+ }
   }, []);
+  //Logout
+  const handleLogout = () => {
+    localStorage.clear();
+    Cookies.remove("accessToken");
+    router.push("/")
+  }
 
   return (
     <div className="flex gap-3">
@@ -41,12 +57,12 @@ const Dashboard = () => {
               </li>
 
               <li>
-                <Link
-                  href="#"
+                <button
+                  
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
+                onClick={handleLogout}>
                   Logout
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -60,6 +76,13 @@ const Dashboard = () => {
             <h1>Welcome {username}</h1>
           </div>
         </div>
+        {
+          role === "Ginner" ? (
+            <p className="translate-y-28 translate-x-56 ">Access denied</p>
+          ):(
+            <p className="translate-y-28 translate-x-56 ">Welcome to Spinner Page</p>
+          )
+        }
       </div>
     </div>
   );

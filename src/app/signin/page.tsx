@@ -29,7 +29,7 @@ const Signin = () => {
 
         // Save access token to cookies
         Cookies.set("accessToken", res.data.data.accessToken, { expires: 7, secure: true });
-        console.log("Token :",res.data.data.accessToken);
+        console.log("Token :", res.data.data.accessToken );
         
 
         // Fetch user details using the access token
@@ -48,6 +48,7 @@ const Signin = () => {
 
         // Check user role and redirect accordingly
         const userRole = userDetails.data.role.user_role;
+        localStorage.setItem("user-role",userRole)
         if (userRole === "Ginner") {
           router.push("/ginner/dashboard");
         } else if (userRole === "Spinner") {
